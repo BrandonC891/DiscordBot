@@ -40,8 +40,8 @@ async def on_message(message):
     author = message.author 
     channel = message.channel 
     raw_message = message.content 
-    #mentions = message.mentions
-    guild = message.guild 
+    #mentions = message.mentions #currently unused 
+    #guild = message.guild       #currently unused
 
 
     if author == client.user: 

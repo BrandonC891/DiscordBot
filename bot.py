@@ -1,6 +1,7 @@
 import os 
 import time 
 import sys 
+import datetime 
 
 import discord 
 from dotenv import load_dotenv 
@@ -24,6 +25,15 @@ def checkAdmin(message):
     
     return True 
 
+
+def printTime(SERVER, channel, author, raw_message): 
+    
+    print( datetime.datetime.now().strftime("[%Y-%m-%d @ %H:%M:%S]"), end=' ')
+    print( '[' + SERVER + '] '+ '[#'+ str(channel) + '] ' + str(author) + ': ' + raw_message)   
+
+    return 
+
+
 @client.event 
 async def on_ready(): 
     for guild in client.guilds: 
@@ -37,15 +47,20 @@ async def on_ready():
 
 @client.event
 async def on_message(message): 
+
     author = message.author 
     channel = message.channel 
     raw_message = message.content 
-    #mentions = message.mentions #currently unused 
-    #guild = message.guild       #currently unused
-
+    #mentions = message.mentions    #unused for now
+    #guild = message.guild          #unused for now
+    SERVER = "DISCORD"  
 
     if author == client.user: 
+        SERVER = "SELFBOT"
+        printTime(SERVER, channel, author, raw_message) 
         return 
+    
+    printTime(SERVER, channel, author, raw_message)
 
     #
     # Command : !Hello
@@ -55,6 +70,7 @@ async def on_message(message):
     if raw_message.lower() == '!hello': 
         reply = await channel.send(hello_response)
         await reply.add_reaction("\N{SLIGHTLY SMILING FACE}")
+        print('\t - Added Reaction')
         return 
     
 
@@ -75,6 +91,8 @@ async def on_message(message):
 
         await client.change_presence(activity=discord.Game((raw_message).split(' ', 1)[1])) 
         await message.add_reaction('👍')
+        print('\t - Set current game to ' + (raw_message).split(' ', 1)[1])
+        print('\t - Added Reaction')
         return 
     
     #
@@ -93,7 +111,7 @@ async def on_message(message):
             return 
          
         await message.add_reaction('👍') #Confirm command acceptance 
-
+        print('\t - Added Reaction')
         num = int((raw_message).split(' ', 1)[1]) #Convert {int} to an int 
 
         counter = 0
@@ -105,9 +123,9 @@ async def on_message(message):
 
         for i in range(len(messages)):  #Clear them 
             tempMessage = messages[i] 
-            await tempMessage.delete() 
+            await tempMessage.delete(delay=1) 
 
-        await channel.send('Clearing Complete!')
+        print('\t - Cleared ' + str(num) + ' messages')
 
     #
     # Command : !update

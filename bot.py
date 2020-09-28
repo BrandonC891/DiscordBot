@@ -1,5 +1,6 @@
 import os 
-import json 
+import time 
+import sys 
 
 import discord 
 from dotenv import load_dotenv 
@@ -12,6 +13,7 @@ setgame_usage = 'Usage: !setgame {game}'
 clear_usage = 'Usage: !clear {size}'
 permission_fail = 'You do not have permission to use this command!'
 hello_response = 'Hello World!'
+update_message = "I'll be back shortly after an update" 
 
 
 client = discord.Client()
@@ -62,6 +64,11 @@ async def on_message(message):
     #
 
     if '!setgame' in raw_message.lower():
+
+        if not checkAdmin(message):     #Check if the user has administrator priveledges
+            await channel.send(permission_fail)
+            return
+
         if(raw_message == '!setgame'): 
             reply = await channel.send(setgame_usage)
             return 
@@ -94,7 +101,7 @@ async def on_message(message):
             if message.author == client.user: 
                 counter += 1 
         
-        messages = await channel.history(limit=num).flatten() #Flatten them 
+        messages = await channel.history(limit=num).flatten() #Flatten them into a list 
 
         for i in range(len(messages)):  #Clear them 
             tempMessage = messages[i] 
@@ -103,14 +110,21 @@ async def on_message(message):
         await channel.send('Clearing Complete!')
 
     #
-    # Command : !Guild
-    # Description : this is a test command
+    # Command : !update
+    # Description : restarts the client and clears the console 
     #
-    if '!guild' in raw_message.lower(): 
-        #await channel.send(command) 
-        await channel.send(guild) 
+    if '!update' in raw_message.lower(): 
+        await channel.send(update_message)
+        clear = lambda: os.system('clear') 
+        clear() 
 
-        guild.Permissions.update()
+        for i in range(0, 5):
+            b = "Updating" + "." * i
+            print(b, end='\r')
+            time.sleep(1) 
+
+        os.execv(sys.executable, ['python3'] + sys.argv) 
+
 
 
 client.run(TOKEN) 

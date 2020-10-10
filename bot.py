@@ -164,6 +164,10 @@ async def on_message(message):
 
         os.execv(sys.executable, ['python3'] + sys.argv) 
 
+    #
+    # Command : !status
+    # Description : Updates the status and optionally the game of the bot 
+    #
 
     def online(): 
         return discord.Status.online 
@@ -204,6 +208,10 @@ async def on_message(message):
 
         return 
 
+    #
+    # Command : !commands
+    # Description : Parses the commandList text file and outputs a formatted list of commands to the user 
+    #
 
     if raw_message.lower() == '!commands': 
         filepath = confDir + '/commandList.txt'

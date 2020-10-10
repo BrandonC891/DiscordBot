@@ -1,0 +1,6 @@
+!hello 
+!setgame 
+!clear 
+!update 
+!status 
+!commands 
